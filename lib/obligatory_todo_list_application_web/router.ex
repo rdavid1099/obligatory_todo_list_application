@@ -16,9 +16,7 @@ defmodule ObligatoryTodoListApplicationWeb.Router do
   scope "/", ObligatoryTodoListApplicationWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    get "/hello", HelloController, :index
-    get "/hello/:messenger", HelloController, :show
+    get "/*path", PageController, :index
   end
 
   # Other scopes may use custom stacks.
