@@ -1,6 +1,10 @@
 import React from 'react'
 import { ReactComponentProps } from 'react-router-dom'
 
-const HomePage = () => <div>HomePage</div>
+import HomePage from './HomePage'
+const HelloPage = () => <h1>HelloPage</h1>
 
-export default HomePage
+export {
+  HomePage,
+  HelloPage
+}
