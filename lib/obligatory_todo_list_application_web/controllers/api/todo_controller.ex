@@ -7,4 +7,12 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoController do
   def index(conn, _params) do
     render(conn, "index.json", todos: Repo.all(Todo))
   end
+
+  def create(conn, params) do
+    todo = %Todo{}
+      |> Todo.changeset(params)
+      |> Repo.insert
+
+    render(conn, "create.json", result: todo)
+  end
 end

@@ -7,6 +7,11 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoView do
     }
   end
 
+  def render("create.json", %{result: {_status, todo}}) do
+    todo
+      |> todo_json
+  end
+
   def todo_json(todo) do
     %{
       id: todo.id,
