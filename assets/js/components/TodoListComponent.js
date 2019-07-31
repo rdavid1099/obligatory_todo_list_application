@@ -11,6 +11,7 @@ export default class TodoListComponent extends React.Component {
       loading: true
     }
     this.fetchAllTodos = this.fetchAllTodos.bind(this)
+    this.submitTodo = this.submitTodo.bind(this)
   }
 
   componentDidMount() {
@@ -23,10 +24,23 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.setState({todos: result.todos, loading: false}))
   }
 
+  submitTodo() {
+    const body = JSON.stringify({
+      title: document.getElementById('todo-input-field').value
+    })
+    fetch(`/api/todo`, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body
+    })
+  }
+
   render() {
     return (
       <div className="jumbotron">
-        <TodoInput />
+        <TodoInput submitTodo={this.submitTodo}/>
         <TodoList todos={this.state.todos} loading={this.state.loading} />
       </div>
     )

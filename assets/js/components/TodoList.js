@@ -3,7 +3,7 @@ import React from 'react'
 import LoadingSpinner from './LoadingSpinner'
 
 const renderTodos = todos => todos.map((todo, key) => (
-  <tr className="table-light">
+  <tr className="table-light" key={key}>
     <td><button type="button" className="btn btn-primary" onClick={console.log}>Completed</button></td>
     <td>{todo.title}</td>
   </tr>
