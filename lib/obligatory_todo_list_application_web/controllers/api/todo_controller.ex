@@ -15,4 +15,11 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoController do
 
     render(conn, "create.json", result: todo)
   end
+
+  def update(conn, params) do
+    todo = Repo.get(Todo, params["id"])
+      |> Ecto.Changeset.change(title: params["title"])
+      |> Repo.update
+    render(conn, "create.json", result: todo)
+  end
 end
