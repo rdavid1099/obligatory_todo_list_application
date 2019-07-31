@@ -5,7 +5,7 @@ import TextInput from './TextInput'
 
 const TodoInput = props => (
   <Form
-    onSubmit={console.log}
+    onSubmit={props.submitTodo}
   >
     <TextInput
       label="What Do You Need To Do?"
