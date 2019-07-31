@@ -21,12 +21,9 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoControllerTest do
   end
 
   test "POST /", %{conn: conn} do
-    query = from Todo,
-              where: [title: "Finish this test"],
-              limit: 1
     conn = post(conn, Helpers.todo_path(conn, :create, %{"title" => "Finish this test"}))
     expected = json_response(conn, 200)
-    result = Repo.all(query)
+    result = from(Todo, where: [title: "Finish this test"], limit: 1) |> Repo.all
     assert Repo.all(Todo) |> Enum.count == 1
     assert result[:id] == expected[:id]
     assert result[:title] == expected[:title]
