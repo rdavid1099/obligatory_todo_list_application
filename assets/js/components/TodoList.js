@@ -3,9 +3,10 @@ import React from 'react'
 import LoadingSpinner from './LoadingSpinner'
 
 const renderTodos = todos => todos.map((todo, key) => (
-  <div className="row" key={key}>
-    <p>{todo.title}</p>
-  </div>
+  <tr className="table-light">
+    <td><button type="button" className="btn btn-primary" onClick={console.log}>Completed</button></td>
+    <td>{todo.title}</td>
+  </tr>
 ))
 
 const TodoList = props => (
@@ -17,9 +18,11 @@ const TodoList = props => (
     !props.loading &&
     <>
       {props.todos.length ? <h3>Stuff Needs to Get Done!</h3> : <h3>Nothing to See Here 🙃</h3>}
-      <div>
-        {renderTodos(props.todos)}
-      </div>
+      <table className="table">
+        <tbody>
+          {renderTodos(props.todos)}
+        </tbody>
+      </table>
     </>
     }
   </center>
