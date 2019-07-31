@@ -24,6 +24,12 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.setState({todos: result.todos, loading: false}))
   }
 
+  addTodoToList(todo) {
+    const todos = [...this.state.todos]
+    todos.push(todo)
+    this.setState({ todos })
+  }
+
   submitTodo() {
     const body = JSON.stringify({
       title: document.getElementById('todo-input-field').value
@@ -35,6 +41,8 @@ export default class TodoListComponent extends React.Component {
       },
       body
     })
+      .then(resp => resp.json())
+      .then(result => this.addTodoToList(result))
   }
 
   render() {
