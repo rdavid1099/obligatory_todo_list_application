@@ -18,11 +18,14 @@ const TodoList = props => (
     !props.loading &&
     <>
       {props.todos.length ? <h3>Stuff Needs to Get Done!</h3> : <h3>Nothing to See Here 🙃</h3>}
-      <table className="table">
-        <tbody>
-          {renderTodos(props.todos, props.editTodo, props.deleteTodo)}
-        </tbody>
-      </table>
+      {props.todos.length ?
+        <table className="table">
+          <tbody>
+            {renderTodos(props.todos, props.editTodo, props.deleteTodo)}
+          </tbody>
+        </table> :
+        <button type="button" className="btn btn-danger" onClick={props.generateData}>GENERATE TODO LIST!</button>
+      }
     </>
     }
   </center>

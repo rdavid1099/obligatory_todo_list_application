@@ -1,4 +1,5 @@
 import React from 'react'
+import Faker from 'faker'
 
 import TodoInput from './TodoInput'
 import TodoList from './TodoList'
@@ -15,6 +16,7 @@ export default class TodoListComponent extends React.Component {
     this.editTodo = this.editTodo.bind(this)
     this.deleteTodo = this.deleteTodo.bind(this)
     this.updateTodoToList = this.updateTodoToList.bind(this)
+    this.generateData = this.generateData.bind(this)
   }
 
   componentDidMount() {
@@ -87,11 +89,27 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.updateTodoToList(id, { title }))
   }
 
+  generateData() {
+    for (var i = 0; i < 1000; i++) {
+      const body = JSON.stringify({ title: Faker.random.words() })
+      fetch(`/api/todo`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body
+      })
+        .then(resp => resp.json())
+        .then(result => this.addTodoToList(result))
+    }
+  }
+
   render() {
     return (
       <div className="jumbotron">
         <TodoInput submitTodo={this.submitTodo}/>
         <TodoList
+          generateData={this.generateData}
           editTodo={this.editTodo}
           deleteTodo={this.deleteTodo}
           todos={this.state.todos}
