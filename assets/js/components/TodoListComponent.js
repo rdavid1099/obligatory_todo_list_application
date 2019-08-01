@@ -29,10 +29,12 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.setState({todos: result.todos, loading: false}))
   }
 
-  addTodoToList(todo) {
-    const todos = [...this.state.todos]
-    todos.push(todo)
-    this.setState({ todos })
+  addTodoToList(todo, opts = null) {
+    if (!opts || opts.i === opts.total) {
+      const todos = [...this.state.todos]
+      todos.push(todo)
+      this.setState({ todos })
+    }
   }
 
   updateTodoToList(id, opts) {
@@ -90,7 +92,8 @@ export default class TodoListComponent extends React.Component {
   }
 
   generateData() {
-    for (var i = 0; i < 1000; i++) {
+    const total = 100000
+    for (var i = 0; i <= total; i++) {
       const body = JSON.stringify({ title: Faker.random.words() })
       fetch(`/api/todo`, {
         method: 'POST',
@@ -100,7 +103,7 @@ export default class TodoListComponent extends React.Component {
         body
       })
         .then(resp => resp.json())
-        .then(result => this.addTodoToList(result))
+        .then(result => this.addTodoToList(result, {i, total}))
     }
   }
 
