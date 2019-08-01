@@ -1,11 +1,13 @@
 defmodule ObligatoryTodoListApplicationWeb.Api.TodoController do
   use ObligatoryTodoListApplicationWeb, :controller
+  import Ecto.Query, only: [from: 2]
 
   alias ObligatoryTodoListApplication.Repo
   alias ObligatoryTodoListApplication.Task.Todo
 
   def index(conn, _params) do
-    render(conn, "index.json", todos: Repo.all(Todo))
+    todos = from(Todo, order_by: [asc: :id]) |> Repo.all
+    render(conn, "index.json", todos: todos)
   end
 
   def create(conn, params) do
