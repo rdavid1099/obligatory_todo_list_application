@@ -12,6 +12,12 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoView do
       |> todo_json
   end
 
+  def render("delete.json", _) do
+    %{
+      status: "Todo successfully deleted"
+    }
+  end
+
   def todo_json(todo) do
     %{
       id: todo.id,

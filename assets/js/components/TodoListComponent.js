@@ -1,4 +1,5 @@
 import React from 'react'
+import Faker from 'faker'
 
 import TodoInput from './TodoInput'
 import TodoList from './TodoList'
@@ -13,7 +14,9 @@ export default class TodoListComponent extends React.Component {
     this.fetchAllTodos = this.fetchAllTodos.bind(this)
     this.submitTodo = this.submitTodo.bind(this)
     this.editTodo = this.editTodo.bind(this)
+    this.deleteTodo = this.deleteTodo.bind(this)
     this.updateTodoToList = this.updateTodoToList.bind(this)
+    this.generateData = this.generateData.bind(this)
   }
 
   componentDidMount() {
@@ -26,17 +29,25 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.setState({todos: result.todos, loading: false}))
   }
 
-  addTodoToList(todo) {
-    const todos = [...this.state.todos]
-    todos.push(todo)
-    this.setState({ todos })
+  addTodoToList(todo, opts = null) {
+    if (!opts || opts.i === opts.total) {
+      const todos = [...this.state.todos]
+      todos.push(todo)
+      this.setState({ todos })
+    }
   }
 
-  updateTodoToList(id, title) {
+  updateTodoToList(id, opts) {
     const todos = this.state.todos.map(todo => {
-      if (todo.id === id) { todo.title = title }
-      return todo
-    })
+      if (todo.id === id) {
+        if (!opts.delete) {
+          todo.title = opts.title
+          return todo;
+        }
+      } else {
+        return todo
+      }
+    }).filter(el => el != null)
     this.setState({ todos })
   }
 
@@ -55,6 +66,17 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.addTodoToList(result))
   }
 
+  deleteTodo(id) {
+    fetch(`/api/todo/${id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    })
+      .then(resp => resp.json())
+      .then(result => this.updateTodoToList(id, {delete: true}))
+  }
+
   editTodo(e, id) {
     const title = e.target.textContent
     const body = JSON.stringify({ title })
@@ -66,7 +88,23 @@ export default class TodoListComponent extends React.Component {
       body
     })
       .then(resp => resp.json())
-      .then(result => this.updateTodoToList(id, title))
+      .then(result => this.updateTodoToList(id, { title }))
+  }
+
+  generateData() {
+    const total = 100000
+    for (var i = 0; i <= total; i++) {
+      const body = JSON.stringify({ title: Faker.random.words() })
+      fetch(`/api/todo`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body
+      })
+        .then(resp => resp.json())
+        .then(result => this.addTodoToList(result, {i, total}))
+    }
   }
 
   render() {
@@ -74,7 +112,9 @@ export default class TodoListComponent extends React.Component {
       <div className="jumbotron">
         <TodoInput submitTodo={this.submitTodo}/>
         <TodoList
+          generateData={this.generateData}
           editTodo={this.editTodo}
+          deleteTodo={this.deleteTodo}
           todos={this.state.todos}
           loading={this.state.loading}
         />

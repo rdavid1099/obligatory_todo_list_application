@@ -24,4 +24,10 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoController do
       |> Repo.update
     render(conn, "create.json", result: todo)
   end
+
+  def delete(conn, params) do
+    Repo.get(Todo, params["id"])
+      |> Repo.delete
+    render(conn, "delete.json")
+  end
 end
