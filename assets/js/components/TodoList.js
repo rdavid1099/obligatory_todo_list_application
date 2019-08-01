@@ -2,10 +2,10 @@ import React from 'react'
 
 import LoadingSpinner from './LoadingSpinner'
 
-const renderTodos = todos => todos.map((todo, key) => (
-  <tr className="table-light" key={key}>
+const renderTodos = (todos, editTodo) => todos.map(todo => (
+  <tr className="table-light" key={todo.id}>
+    <td style={{width: '85%', textAlign: 'center'}} contentEditable="true" onBlur={e => editTodo(e, todo.id)}>{todo.title}</td>
     <td><button type="button" className="btn btn-primary" onClick={console.log}>Completed</button></td>
-    <td>{todo.title}</td>
   </tr>
 ))
 
@@ -20,7 +20,7 @@ const TodoList = props => (
       {props.todos.length ? <h3>Stuff Needs to Get Done!</h3> : <h3>Nothing to See Here 🙃</h3>}
       <table className="table">
         <tbody>
-          {renderTodos(props.todos)}
+          {renderTodos(props.todos, props.editTodo)}
         </tbody>
       </table>
     </>

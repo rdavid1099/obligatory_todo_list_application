@@ -12,6 +12,8 @@ export default class TodoListComponent extends React.Component {
     }
     this.fetchAllTodos = this.fetchAllTodos.bind(this)
     this.submitTodo = this.submitTodo.bind(this)
+    this.editTodo = this.editTodo.bind(this)
+    this.updateTodoToList = this.updateTodoToList.bind(this)
   }
 
   componentDidMount() {
@@ -30,6 +32,14 @@ export default class TodoListComponent extends React.Component {
     this.setState({ todos })
   }
 
+  updateTodoToList(id, title) {
+    const todos = this.state.todos.map(todo => {
+      if (todo.id === id) { todo.title = title }
+      return todo
+    })
+    this.setState({ todos })
+  }
+
   submitTodo() {
     const body = JSON.stringify({
       title: document.getElementById('todo-input-field').value
@@ -45,11 +55,29 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.addTodoToList(result))
   }
 
+  editTodo(e, id) {
+    const title = e.target.textContent
+    const body = JSON.stringify({ title })
+    fetch(`/api/todo/${id}`, {
+      method: 'PUT',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body
+    })
+      .then(resp => resp.json())
+      .then(result => this.updateTodoToList(id, title))
+  }
+
   render() {
     return (
       <div className="jumbotron">
         <TodoInput submitTodo={this.submitTodo}/>
-        <TodoList todos={this.state.todos} loading={this.state.loading} />
+        <TodoList
+          editTodo={this.editTodo}
+          todos={this.state.todos}
+          loading={this.state.loading}
+        />
       </div>
     )
   }

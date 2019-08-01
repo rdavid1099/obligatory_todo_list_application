@@ -28,4 +28,14 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoControllerTest do
     assert result[:id] == expected[:id]
     assert result[:title] == expected[:title]
   end
+
+  test "PUT /", %{conn: conn} do
+    todo = insert(:todo)
+    conn = put(conn, Helpers.todo_path(conn, :update, todo.id, %{"title" => "Finish this test"}))
+    expected = json_response(conn, 200)
+    result = from(Todo, where: [title: "Finish this test"], limit: 1) |> Repo.all
+    assert Repo.all(Todo) |> Enum.count == 1
+    assert result[:id] == expected[:id]
+    assert result[:title] == expected[:title]
+  end
 end
