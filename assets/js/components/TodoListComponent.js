@@ -13,6 +13,7 @@ export default class TodoListComponent extends React.Component {
     this.fetchAllTodos = this.fetchAllTodos.bind(this)
     this.submitTodo = this.submitTodo.bind(this)
     this.editTodo = this.editTodo.bind(this)
+    this.deleteTodo = this.deleteTodo.bind(this)
     this.updateTodoToList = this.updateTodoToList.bind(this)
   }
 
@@ -32,11 +33,17 @@ export default class TodoListComponent extends React.Component {
     this.setState({ todos })
   }
 
-  updateTodoToList(id, title) {
+  updateTodoToList(id, opts) {
     const todos = this.state.todos.map(todo => {
-      if (todo.id === id) { todo.title = title }
-      return todo
-    })
+      if (todo.id === id) {
+        if (!opts.delete) {
+          todo.title = opts.title
+          return todo;
+        }
+      } else {
+        return todo
+      }
+    }).filter(el => el != null)
     this.setState({ todos })
   }
 
@@ -55,6 +62,17 @@ export default class TodoListComponent extends React.Component {
       .then(result => this.addTodoToList(result))
   }
 
+  deleteTodo(id) {
+    fetch(`/api/todo/${id}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+    })
+      .then(resp => resp.json())
+      .then(result => this.updateTodoToList(id, {delete: true}))
+  }
+
   editTodo(e, id) {
     const title = e.target.textContent
     const body = JSON.stringify({ title })
@@ -66,7 +84,7 @@ export default class TodoListComponent extends React.Component {
       body
     })
       .then(resp => resp.json())
-      .then(result => this.updateTodoToList(id, title))
+      .then(result => this.updateTodoToList(id, { title }))
   }
 
   render() {
@@ -75,6 +93,7 @@ export default class TodoListComponent extends React.Component {
         <TodoInput submitTodo={this.submitTodo}/>
         <TodoList
           editTodo={this.editTodo}
+          deleteTodo={this.deleteTodo}
           todos={this.state.todos}
           loading={this.state.loading}
         />
