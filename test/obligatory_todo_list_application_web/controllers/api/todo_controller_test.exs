@@ -38,4 +38,13 @@ defmodule ObligatoryTodoListApplicationWeb.Api.TodoControllerTest do
     assert result[:id] == expected[:id]
     assert result[:title] == expected[:title]
   end
+
+  test "DELETE /", %{conn: conn} do
+    todo = insert(:todo)
+    conn = delete(conn, Helpers.todo_path(conn, :delete, todo.id))
+    assert json_response(conn, 200) == %{
+      "status" => "Todo successfully deleted"
+    }
+    assert Repo.all(Todo) |> Enum.count == 0
+  end
 end
